@@ -7,23 +7,29 @@ from multiprocessing import cpu_count
 import psutil
 from twisted.internet import task, reactor
 import time
+import sys
 
 def f(x):
-    for i in range(0,22):
+    for i in range(0, 22):
         x *= x
-    time.sleep(30)
+
+def sleep():
+    print "Sending a 0"
+    time.sleep(25)
 
 def cpu_stress():
     processes = cpu_count()
-    print 'utilizing %d cores\n' % processes
-
+    print "Sending a 1"
     pool = Pool(processes)
     pool.map(f, range(1000, 1000+processes))
-    print "Done!"
+
+if __name__ == '__main__':
+    message = raw_input('Enter the message:')
+    for bit in list(message):
+        if bit == '1':
+            cpu_stress()
+            #time.sleep(30)
+        elif bit == '0':
+            sleep()
 
 
-l = task.LoopingCall(cpu_stress)
-l.start(30.0) # call every second
-
-# l.stop() will stop the looping calls
-reactor.run()
